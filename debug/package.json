@@ -1,0 +1,20 @@
+{
+    "name": "dmxlt",
+    "scripts": {
+        "build": "rimraf dist && webpack",
+        "build-watch": "rimraf dist && webpack -w"
+    },
+    "dependencies": {
+        "enttec-open-dmx-usb": "*",
+        "websocket": "*"
+    },
+    "devDependencies": {
+        "webpack": "",
+        "webpack-cli": "*",
+        "@babel/core": "",
+        "@babel/preset-env": "",
+        "babel-loader": "",
+        "rimraf": "*",
+        "websock-lt": "https://github.com/DanieleCapuano/websock-lt#master"
+    }
+}

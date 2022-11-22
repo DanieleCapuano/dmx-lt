@@ -51,8 +51,8 @@ See the config/config.json file.
 .\start.bat
 ```
 
-3. Start the debug client which will show the colors as if it was the actual light
+3. Start the debug client (from root directory) which will show the colors as if it was the actual light.
+The following code will assume the http-server node module is installed as simple local web server.
 ```bash
-cd debug
 hs . -o
 ```

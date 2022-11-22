@@ -1,1 +1,1 @@
-node .\dist\light_process_main.js
+node %0\..\dist\light_process_main.js

@@ -1,5 +1,5 @@
 //you can control the setInterval frequency using this value
-const INTERVAL_FREQ = 16;
+const INTERVAL_FREQ = 4;
 
 //available easing functions:
 //linear, easein, easeout

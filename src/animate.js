@@ -1,5 +1,5 @@
 //you can control the setInterval frequency using this value
-const INTERVAL_FREQ = 4;
+const INTERVAL_FREQ = 1;
 
 //available easing functions:
 //linear, easein, easeout
@@ -65,10 +65,10 @@ function _manage_easing_fn(n, easing_fn) {
     if (easing_fn) {
         switch (easing_fn) {
             case 'easein':
-                out = Math.pow(n, 4);
+                out = Math.pow(n, 3);
                 break;
             case 'easeout':
-                out = Math.pow(n, 1 / 4);
+                out = Math.pow(n, 1 / 3);
                 break;
             case 'linear':
             default:

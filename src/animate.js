@@ -18,7 +18,7 @@ function animate(start_channel, start_values, dest_values, t, easing, updateFn) 
             max = Math.max,
             itv_fn = () => {
                 let elapsed_time = (performance.now() - t0);
-                lerp_param = min(max(elapsed_time / (t1 - t0), 0), 1);
+                lerp_param = min(max(elapsed_time / (t1 - t0), 0), 1);  //in [0, 1]
                 lerp_param = _manage_easing_fn(lerp_param, easing);
                 t_curr = min(max(t * lerp_param, 0), t);
 

@@ -32,7 +32,7 @@ function _setColor(colors_array) {
     if (!Array.isArray(colors_array)) colors_array = [colors_array];
 
     colors_array.forEach(color_def => {
-        let color = color_def.color;
+        let color = color_def.color || { r: 0, g: 0, b: 0 };
         openDMX.setColor(
             color_def.startChannel || config.startChannel,
             color.r, color.g, color.b,

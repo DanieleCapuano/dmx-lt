@@ -81,7 +81,7 @@ const setColor = (startChannel, r, g, b, time, easing) => {
 function _init_rgb_obj(startChannel, r, g, b) {
     let o = {};
     let nchannels = config.light_channels_n || 3,
-        cols = [r, g, b];
+        cols = [r, g, b].map(n => Math.max(0, Math.min(255, n)));
     for (let i = 0; i < nchannels; i++) {
         o[startChannel + i] = cols[i] || 0;
     }

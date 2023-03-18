@@ -14,11 +14,13 @@ let dmxDevice = null,
     animationPromises = [];
 
 let DEBUG = false;
+let config = {};
 
 ///////////////////////////////////////////////////////////////////
 
-const init = (isDebug) => {
-    DEBUG = isDebug || false;
+const init = (cfg) => {
+    config = cfg;
+    DEBUG = config.DEBUG || false;
     const DMXDevice = openDMX.EnttecOpenDMXUSBDevice;
     return new Promise((res) => {
         if (!DEBUG) {
@@ -78,9 +80,11 @@ const setColor = (startChannel, r, g, b, time, easing) => {
 
 function _init_rgb_obj(startChannel, r, g, b) {
     let o = {};
-    o[startChannel] = r;
-    o[startChannel + 1] = g;
-    o[startChannel + 2] = b;
+    let nchannels = config.light_channels_n || 3,
+        cols = [r, g, b];
+    for (let i = 0; i < nchannels; i++) {
+        o[startChannel + i] = cols[i] || 0;
+    }
 
     return o;
 }

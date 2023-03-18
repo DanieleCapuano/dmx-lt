@@ -17,7 +17,7 @@ function _start() {
         globalThis.DEBUG = DEBUG;
         globalThis.GLOBAL_CONFIG = config;
 
-        init(DEBUG).then(() => {
+        init(config).then(() => {
             (config.light_addresses || [1]).forEach(startChannel => {
                 setColor({
                     color: { r: 0, g: 0, b: 0 },

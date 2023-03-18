@@ -14,11 +14,13 @@ const config = {
     DEBUG: false
 };
 
-function _init(isDebug) {
-    config.DEBUG = isDebug || false;
+function _init(cfg) {
+    config.DEBUG = cfg._BEDEBUG_ || false;
+    Object.assign(config, cfg);
+
     // ctl = new DMXController();
     return new Promise(res => {
-        openDMX.init(config.DEBUG).then(dev => {
+        openDMX.init(config).then(dev => {
             ctl = dev;
             res(ctl);
         });
@@ -32,9 +34,9 @@ function _setColor(colors_array) {
     colors_array.forEach(color_def => {
         let color = color_def.color;
         openDMX.setColor(
-            color_def.startChannel || config.startChannel, 
-            color.r, color.g, color.b, 
-            color_def.time, 
+            color_def.startChannel || config.startChannel,
+            color.r, color.g, color.b,
+            color_def.time,
             color_def.easingFn
         );
     });

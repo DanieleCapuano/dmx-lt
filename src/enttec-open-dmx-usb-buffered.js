@@ -25,9 +25,10 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
         this.buffer = Buffer.alloc(513);
         this.buffersQueue = [];
 
-        this.port = { isOpen: () => true, set: (o, cb) => cb() };
-        return this.startSending(0);
+        // this.port = { isOpen: () => true, set: (o, cb) => cb() };
+        // return this.startSending(0);
 
+        console.info("PORT", path);
         this.port = new serialport_1.default(path, {
             baudRate: 250000,
             dataBits: 8,
@@ -37,11 +38,13 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
         });
         this.port.on("open", () => {
             this.emit("ready");
+            console.info("READY!");
             if (startSending)
-                this.startSending(0);
+                this.startSending(2);
         });
         // Without this, errors would be uncaught.
         this.port.on("error", (error) => {
+            console.info("ERROR", error);
             this.emit("error", error);
         });
     }
@@ -84,12 +87,13 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
     setChannels(channels) {
         // console.info("WRITE CHANNELS");
         const { max, min } = Math;
-        let _ch_buffer = Buffer.alloc(513);
-        _ch_buffer[0] = 0;
-        if (this.buffersQueue.length) {
-            //start editing from last value in queue
-            this.buffersQueue[this.buffersQueue.length - 1].copy(_ch_buffer);
-        }
+        // let _ch_buffer = Buffer.alloc(513);
+        // _ch_buffer[0] = 0;
+        // if (this.buffersQueue.length) {
+        //     //start editing from last value in queue
+        //     this.buffersQueue[this.buffersQueue.length - 1].copy(_ch_buffer);
+        // }
+        let _ch_buffer = this.buffer;
 
         if (Buffer.isBuffer(channels)) {
             if (channels.length > 512)
@@ -126,7 +130,9 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
         else
             throw new TypeError("data must be of type Buffer, Object or Array.");
 
-        this.buffersQueue.push(_ch_buffer);
+        // this.buffersQueue.push(_ch_buffer);
+        // this.buffersQueue[0] = _ch_buffer;
+        this.buffer = _ch_buffer;
     }
     /**
      * @returns {Promise} Resolves when the whole universe was sent.
@@ -138,7 +144,7 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
                 // setTimeout(() => {
                 this.port.set({ brk: false, rts: false }, () => {
                     // setTimeout(() => {
-                    this.buffer = this.buffersQueue.length ? this.buffersQueue.shift() : this.buffer;
+                    // this.buffer = this.buffersQueue.length ? this.buffersQueue.shift() : this.buffer;
 
 
                     //to DEBUG ONLY

@@ -1,7 +1,7 @@
 const { performance } = this.window || require('perf_hooks');
 
 //you can control the setInterval frequency using this value
-const INTERVAL_FREQ = 0;
+const INTERVAL_FREQ = 8;
 
 //available easing functions:
 //linear, easein, easeout

@@ -15,33 +15,33 @@ window.onload = () => {
     _set_rgb(rgb[1], 1);
 
     start_ws('6789');   //to debug sending message to the backend
-    start_ws('6780', (msg_list) => {
-        if (!Array.isArray(msg_list)) msg_list = [msg_list];
-        msg_list.forEach(msg => {
-            let c = msg.color,
-                t = msg.time,
-                e = msg.easingFn,
-                startChannel = msg.startChannel || 1,
-                rgb_val = {
-                    [String(startChannel)]: c.r,
-                    [String(startChannel + 1)]: c.g,
-                    [String(startChannel + 2)]: c.b
-                };
-            if (animPromises[startChannel]) {
-                window.stopAnimation(startChannel);
-                animPromises[startChannel] = null;
-            }
+    // start_ws('6780', (msg_list) => {
+    //     if (!Array.isArray(msg_list)) msg_list = [msg_list];
+    //     msg_list.forEach(msg => {
+    //         let c = msg.color,
+    //             t = msg.time,
+    //             e = msg.easingFn,
+    //             startChannel = msg.startChannel || 1,
+    //             rgb_val = {
+    //                 [String(startChannel)]: c.r,
+    //                 [String(startChannel + 1)]: c.g,
+    //                 [String(startChannel + 2)]: c.b
+    //             };
+    //         if (animPromises[startChannel]) {
+    //             window.stopAnimation(startChannel);
+    //             animPromises[startChannel] = null;
+    //         }
 
-            if (!t) {
-                _set_rgb(rgb_val, startChannel);
-            }
-            else {
-                animPromises[startChannel] = animate_debug(startChannel, rgb_val, t, e).then(() => {
-                    animPromises[startChannel] = null;
-                });
-            }
-        });
-    });
+    //         if (!t) {
+    //             _set_rgb(rgb_val, startChannel);
+    //         }
+    //         else {
+    //             animPromises[startChannel] = animate_debug(startChannel, rgb_val, t, e).then(() => {
+    //                 animPromises[startChannel] = null;
+    //             });
+    //         }
+    //     });
+    // });
 
     function animate_debug(channel, dest_values, time, easing) {
         rgb[channel] = rgb[channel] || {

@@ -1,4 +1,5 @@
-import { start_ws } from "websock-lt";
+import { start_ws, send_ws_msg } from "websock-lt";
+window.WS = { start_ws, send_ws_msg };
 
 window.onload = () => {
     if (!window.animate && !window.stopAnimation) {
@@ -44,10 +45,10 @@ window.onload = () => {
     function animate_debug(channel, dest_values, time, easing) {
         rgb[channel] = rgb[channel] || {
             [channel]: 0,
-            [channel+1]: 0,
-            [channel+2]: 0
+            [channel + 1]: 0,
+            [channel + 2]: 0
         };
-        
+
         return window.animate(channel, rgb[channel], dest_values, time, easing, (update_val) => {
             _set_rgb(
                 update_val,

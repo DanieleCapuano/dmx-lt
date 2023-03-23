@@ -6,16 +6,18 @@
         "build-watch": "rimraf dist && webpack -w"
     },
     "dependencies": {
-        "enttec-open-dmx-usb": "*",
+        "enttec-open-dmx-usb": "^3.0.1",
+        "eventemitter3": "^4.0.7",
+        "serialport": "^9.0.7",
         "websocket": "*"
     },
     "devDependencies": {
-        "webpack": "",
-        "webpack-cli": "*",
         "@babel/core": "",
         "@babel/preset-env": "",
         "babel-loader": "",
-        "rimraf": "*",
-        "websock-lt": "https://github.com/DanieleCapuano/websock-lt#master"
+        "rimraf": "^4.4.1",
+        "webpack": "",
+        "webpack-cli": "*",
+        "websock-lt": "git+https://github.com/DanieleCapuano/websock-lt.git#master"
     }
 }

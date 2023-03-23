@@ -1,4 +1,5 @@
-const openDMX = require("enttec-open-dmx-usb");
+//const openDMX = require("enttec-open-dmx-usb");   //use this to have back the "official" behavior
+const openDMX = require("./enttec-open-dmx-usb-buffered");
 const process = require('node:process');
 const animateObj = require('./animate');
 

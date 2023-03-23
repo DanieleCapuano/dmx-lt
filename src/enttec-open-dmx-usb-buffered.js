@@ -1,3 +1,5 @@
+//quite based on https://www.npmjs.com/package/enttec-open-dmx-usb
+
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -8,6 +10,8 @@ const eventemitter3_1 = require("eventemitter3");
 const serialport_1 = __importDefault(require("serialport"));
 exports.VENDOR_ID = "0403"; // Enttec
 exports.PRODUCT_ID = "6001"; // Open DMX USB
+
+
 class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
     /**
      * @param {string} path A path returned by {@link EnttecOpenDMXUSBDevice.listDevices} or
@@ -20,6 +24,10 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
         this.sendTimeout = null;
         this.buffer = Buffer.alloc(513);
         this.buffersQueue = [];
+
+        this.port = { isOpen: () => true, set: (o, cb) => cb() };
+        return this.startSending(0);
+
         this.port = new serialport_1.default(path, {
             baudRate: 250000,
             dataBits: 8,
@@ -30,7 +38,7 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
         this.port.on("open", () => {
             this.emit("ready");
             if (startSending)
-                this.startSending(4);
+                this.startSending(0);
         });
         // Without this, errors would be uncaught.
         this.port.on("error", (error) => {
@@ -73,30 +81,29 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
      * @param {Buffer|Object|Array} channels
      * @param {boolean} [clear=false] Whether all previously assigned channels should be set to 0
      */
-    setChannels(channels, clear = false) {
+    setChannels(channels) {
         // console.info("WRITE CHANNELS");
-        // let _ch_buffer = Buffer.alloc(513);
-        // _ch_buffer[0] = 0;
-        // this.buffer.copy(_ch_buffer);   //current value of sent buffer
-
-        if (clear) {
-            this.buffer = Buffer.alloc(513);
-            this.buffer[0] = 0;
+        const { max, min } = Math;
+        let _ch_buffer = Buffer.alloc(513);
+        _ch_buffer[0] = 0;
+        if (this.buffersQueue.length) {
+            //start editing from last value in queue
+            this.buffersQueue[this.buffersQueue.length - 1].copy(_ch_buffer);
         }
+
         if (Buffer.isBuffer(channels)) {
             if (channels.length > 512)
                 throw new Error("The maximum size of an DMX universe is 512 channels.");
-            // channels.copy(_ch_buffer, 1);
-            channels.copy(this.buffer, 1);
+            channels.copy(_ch_buffer, 1);
+            // channels.copy(this.buffer, 1);
         }
         else if (Array.isArray(channels)) {
             if (channels.length > 512)
                 throw new Error("The maximum size of an DMX universe is 512 channels.");
             channels.forEach((value, index) => {
-                if (value > 0xFF || value < 0)
-                    throw new Error("All values must be between 0 and 255.");
-                // _ch_buffer[index + 1] = value;
-                this.buffer[index + 1] = value;
+                value = max(min(value, 0xFF), 0);
+                _ch_buffer[index + 1] = value;
+                // this.buffer[index + 1] = value;
             });
         }
         else if (typeof channels === "object") {
@@ -110,16 +117,16 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
                 }
                 if (channelNumber > 512 || channelNumber < 1)
                     throw new Error("All channel numbers must be between 1 and 512.");
-                else if (value > 0xFF || value < 0)
-                    throw new Error("All values must be between 0 and 255.");
-                // _ch_buffer[channelNumber] = value;
-                this.buffer[channelNumber] = value;
+
+                value = max(min(value, 0xFF), 0);
+                _ch_buffer[channelNumber] = value;
+                // this.buffer[channelNumber] = value;
             });
         }
         else
             throw new TypeError("data must be of type Buffer, Object or Array.");
 
-        // this.buffersQueue.push(_ch_buffer);
+        this.buffersQueue.push(_ch_buffer);
     }
     /**
      * @returns {Promise} Resolves when the whole universe was sent.
@@ -131,10 +138,15 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
                 // setTimeout(() => {
                 this.port.set({ brk: false, rts: false }, () => {
                     // setTimeout(() => {
-                    // this.buffer = this.buffersQueue.length ? this.buffersQueue.shift() : this.buffer;
+                    this.buffer = this.buffersQueue.length ? this.buffersQueue.shift() : this.buffer;
+
+
+                    //to DEBUG ONLY
                     // console.info("BUFFER TO SEND", this.buffer);
+                    // console.info("BUFFERED", this.buffersQueue.length);
                     // resolve();
-                    this.port.write(this.buffer, () => resolve());
+
+                    this.port.write(this.buffer, resolve);
                     // }, 0);
                 });
                 // }, 0);
@@ -159,7 +171,8 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
     static async getFirstAvailableDevice() {
         const devices = await EnttecOpenDMXUSBDevice.listDevices();
         if (devices.length === 0)
-            throw new Error("No device found.");
+            // throw new Error("No device found.");
+            return "/dev/test";
         else
             return devices[0];
     }

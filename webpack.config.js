@@ -7,7 +7,9 @@ module.exports = [{
     plugins: [
         // This is the important part for dmx to work
         new webpack.ExternalsPlugin('commonjs', [
-            'enttec-open-dmx-usb' 
+            'enttec-open-dmx-usb',
+            'serialport',
+            'eventemitter3' 
         ]) 
     ],
 }, {

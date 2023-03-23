@@ -14,6 +14,7 @@ window.onload = () => {
     };
     _set_rgb(rgb[1], 1);
 
+    start_ws('6789');   //to debug sending message to the backend
     start_ws('6780', (msg_list) => {
         if (!Array.isArray(msg_list)) msg_list = [msg_list];
         msg_list.forEach(msg => {

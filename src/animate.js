@@ -1,12 +1,13 @@
 const { performance } = this.window || require('perf_hooks');
 
 //you can control the setInterval frequency using this value
-const INTERVAL_FREQ = 8;
+const INTERVAL_FREQ = 2;
 
 //available easing functions:
 //linear, easein, easeout
 let currentPromises = [],
-    animationIntervals = [];
+    animationIntervals = [],
+    f32a = new Float32Array();
 function animate(start_channel, start_values, dest_values, t, easing, updateFn) {
     start_channel = start_channel || 1;
     currentPromises[start_channel] = new Promise(resolve => {
@@ -34,7 +35,9 @@ function animate(start_channel, start_values, dest_values, t, easing, updateFn) 
                         o[k] = a;
                     }
                     else {
-                        o[k] = a * (1 - lerp_param) + b * lerp_param;
+                        let v = a * (1 - lerp_param) + b * lerp_param;
+                        v = new Uint8Array(new Float32Array([v]))[0];
+                        o[k] = v;
                     }
                     return o;
                 }, update_obj);
@@ -67,10 +70,10 @@ function _manage_easing_fn(n, easing_fn) {
     if (easing_fn) {
         switch (easing_fn) {
             case 'easein':
-                out = Math.pow(n, 3);
+                out = Math.pow(n, 2);
                 break;
             case 'easeout':
-                out = Math.pow(n, 1 / 3);
+                out = Math.pow(n, 1 / 2);
                 break;
             case 'linear':
             default:

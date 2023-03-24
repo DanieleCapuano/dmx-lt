@@ -5,11 +5,7 @@ const animateObj = require('./animate');
 
 ///////////////////////////////////////////////////////////////////
 let rgb = {
-    1: {
-        1: 0,
-        2: 0,
-        3: 0
-    }
+
 };
 let dmxDevice = null,
     animationPromises = [];
@@ -26,15 +22,13 @@ const init = (cfg) => {
     return new Promise((res) => {
         if (!DEBUG) {
             DMXDevice.getFirstAvailableDevice().then(dev => {
-                dmxDevice = new DMXDevice(dev);
+                dmxDevice = new DMXDevice(dev, config);
+                clearColors(config);
 
-                // console.info("DEVICE", device);
-                dmxDevice.setChannels(rgb);
                 process.on('beforeExit', () => {
                     console.log('Cleaning up lights to rgb 0');
-                    dmxDevice.setChannels({ 1: 0, 2: 0, 3: 0 });
+                    clearColors(config);
                 });
-                // _demo();
 
                 res(dmxDevice);
             });
@@ -45,8 +39,13 @@ const init = (cfg) => {
             }
             res(dmxDevice);
         }
+    });
+}
 
-        // _animate_debug(res);
+const clearColors = (config) => {
+    const { light_addresses } = config;
+    light_addresses.forEach(startChannel => {
+        dmxDevice.setChannels(_init_rgb_obj(startChannel, 0, 0, 0));
     });
 }
 
@@ -79,12 +78,49 @@ const setColor = (startChannel, r, g, b, time, easing) => {
     }
 };
 
+/*
+    the config might contain a detailed object with configuration for each address shaped as follows:
+    {
+        "address_opts": {
+            "1": {
+                "red_offset": 1,
+                "fixed_values": [{
+                    "offset": 0,
+                    "value": 255
+                }, {
+                    "offset": 4,
+                    "value": 0
+                }, {
+                    "offset": 5,
+                    "value": 0
+                }]
+            }
+        }
+    }
+
+    in the above example, a fixture is configured to have, for each 6-channels address:
+    [alpha, red, green, blue, strobo, mix]
+
+    The assumption is still that r, g, b channels are consecutive starting from startChannel + red_offset
+ */
 function _init_rgb_obj(startChannel, r, g, b) {
     let o = {};
-    let nchannels = config.light_channels_n || 3,
-        cols = [r, g, b].map(n => Math.max(0, Math.min(255, n)));
-    for (let i = 0; i < nchannels; i++) {
-        o[startChannel + i] = cols[i] || 0;
+    const { light_options } = config,
+        { max, min } = Math,
+        address_opts = (light_options || {})[startChannel] || {},
+        { fixed_values, red_offset } = address_opts,
+        cols = [r, g, b].map(n => max(0, min(255, n)));
+
+    for (let i = 0; i < (fixed_values || []).length; i++) {
+        let fv = fixed_values[i];
+        o[startChannel + fv.offset] = fv.value;
+    }
+
+    let ro = red_offset || 0,
+        j = 0;
+    for (let i = ro; i < ro + 3; i++) {
+        o[startChannel + i] = cols[j] || 0;
+        j++;
     }
 
     return o;

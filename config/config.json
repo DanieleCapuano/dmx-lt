@@ -2,7 +2,72 @@
     "_BEDEBUG_": false,
     "light_addresses": [
         1,
-        4,
-        7
-    ]
+        7,
+        13
+    ],
+    "light_options": {
+        "1": {
+            "channels_n": 6,
+            "red_offset": 1,
+            "fixed_values": [
+                {
+                    "id": "alpha",
+                    "offset": 0,
+                    "value": 255
+                },
+                {
+                    "id": "strobo",
+                    "offset": 4,
+                    "value": 0
+                },
+                {
+                    "id": "mix",
+                    "offset": 5,
+                    "value": 0
+                }
+            ]
+        },
+        "7": {
+            "channels_n": 6,
+            "red_offset": 1,
+            "fixed_values": [
+                {
+                    "id": "alpha",
+                    "offset": 0,
+                    "value": 255
+                },
+                {
+                    "id": "strobo",
+                    "offset": 4,
+                    "value": 0
+                },
+                {
+                    "id": "mix",
+                    "offset": 5,
+                    "value": 0
+                }
+            ]
+        },
+        "13": {
+            "channels_n": 6,
+            "red_offset": 1,
+            "fixed_values": [
+                {
+                    "id": "alpha",
+                    "offset": 0,
+                    "value": 255
+                },
+                {
+                    "id": "strobo",
+                    "offset": 4,
+                    "value": 0
+                },
+                {
+                    "id": "mix",
+                    "offset": 5,
+                    "value": 0
+                }
+            ]
+        }
+    }
 }

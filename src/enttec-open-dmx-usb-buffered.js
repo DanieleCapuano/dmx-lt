@@ -11,6 +11,7 @@ const serialport_1 = __importDefault(require("serialport"));
 exports.VENDOR_ID = "0403"; // Enttec
 exports.PRODUCT_ID = "6001"; // Open DMX USB
 
+let configObj = {};
 
 class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
     /**
@@ -18,17 +19,21 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
      * {@link EnttecOpenDMXUSBDevice.getFirstAvailableDevice}.
      * @param {boolean} [startSending=true] Whether the device should start sending as soon as it is ready.
      */
-    constructor(path, startSending = true) {
+    constructor(path, config) {
         super();
+        configObj = config;
+
+        let n_lights = config.light_addresses.length,
+            l_opts = configObj.light_options,
+            nbytes = (!l_opts) ? n_lights * (config.channels_n || 3) : Object.keys(l_opts).reduce((n, k) => n + l_opts[k].channels_n, 0);
+
+        nbytes += parseInt(nbytes / 1.5);
+
         this.shouldBeSending = false;
         this.sendTimeout = null;
-        this.buffer = Buffer.alloc(513);
+        this.buffer = Buffer.alloc(nbytes);
         this.buffersQueue = [];
 
-        // this.port = { isOpen: () => true, set: (o, cb) => cb() };
-        // return this.startSending(0);
-
-        console.info("PORT", path);
         this.port = new serialport_1.default(path, {
             baudRate: 250000,
             dataBits: 8,
@@ -38,13 +43,12 @@ class EnttecOpenDMXUSBDevice extends eventemitter3_1.EventEmitter {
         });
         this.port.on("open", () => {
             this.emit("ready");
-            console.info("READY!");
-            if (startSending)
-                this.startSending(2);
+            console.info("Device " + path + " ready.");
+            this.startSending(2);
         });
         // Without this, errors would be uncaught.
         this.port.on("error", (error) => {
-            console.info("ERROR", error);
+            console.info("ERROR opening the device:", error);
             this.emit("error", error);
         });
     }

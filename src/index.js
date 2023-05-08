@@ -17,6 +17,16 @@ function _start() {
         globalThis.DEBUG = DEBUG;
         globalThis.GLOBAL_CONFIG = config;
 
+        if (!config.light_addresses && !config.light_options) {
+            console.warn("You should provide light_addresses || light_options. No lighting information available.");
+            config.light_addresses = [];
+            config.light_options = {};
+        }
+
+        if (!config.light_addresses) {
+            config.light_addresses = Object.keys(config.light_options).map(s => parseInt(s));
+        }
+
         init(config).then(() => {
             (config.light_addresses || [1]).forEach(startChannel => {
                 setColor({

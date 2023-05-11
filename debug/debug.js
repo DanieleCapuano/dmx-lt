@@ -76,7 +76,6 @@ window.onload = () => {
             container.appendChild(div);
         }
 
-
         div.style.backgroundColor = 'rgba('
             + rgb_data[String(startChannel)] + ', ' +
             + rgb_data[String(startChannel + 1)] + ', ' +

@@ -14,34 +14,34 @@ window.onload = () => {
     };
     _set_rgb(rgb[1], 1);
 
-    start_ws('6789');   //to debug sending message to the backend
-    // start_ws('6780', (msg_list) => {
-    //     if (!Array.isArray(msg_list)) msg_list = [msg_list];
-    //     msg_list.forEach(msg => {
-    //         let c = msg.color,
-    //             t = msg.time,
-    //             e = msg.easingFn,
-    //             startChannel = msg.startChannel || 1,
-    //             rgb_val = {
-    //                 [String(startChannel)]: c.r,
-    //                 [String(startChannel + 1)]: c.g,
-    //                 [String(startChannel + 2)]: c.b
-    //             };
-    //         if (animPromises[startChannel]) {
-    //             window.stopAnimation(startChannel);
-    //             animPromises[startChannel] = null;
-    //         }
+    // start_ws('6789');   //to debug sending message to the backend
+    start_ws('6780', (msg_list) => {
+        if (!Array.isArray(msg_list)) msg_list = [msg_list];
+        msg_list.forEach(msg => {
+            let c = msg.color,
+                t = msg.time,
+                e = msg.easingFn,
+                startChannel = msg.startChannel || 1,
+                rgb_val = {
+                    [String(startChannel)]: c.r,
+                    [String(startChannel + 1)]: c.g,
+                    [String(startChannel + 2)]: c.b
+                };
+            if (animPromises[startChannel]) {
+                window.stopAnimation(startChannel);
+                animPromises[startChannel] = null;
+            }
 
-    //         if (!t) {
-    //             _set_rgb(rgb_val, startChannel);
-    //         }
-    //         else {
-    //             animPromises[startChannel] = animate_debug(startChannel, rgb_val, t, e).then(() => {
-    //                 animPromises[startChannel] = null;
-    //             });
-    //         }
-    //     });
-    // });
+            if (!t) {
+                _set_rgb(rgb_val, startChannel);
+            }
+            else {
+                animPromises[startChannel] = animate_debug(startChannel, rgb_val, t, e).then(() => {
+                    animPromises[startChannel] = null;
+                });
+            }
+        });
+    });
 
     function animate_debug(channel, dest_values, time, easing) {
         rgb[channel] = rgb[channel] || {
@@ -63,14 +63,23 @@ window.onload = () => {
         startChannel = startChannel || 1;
 
         let rgb_data = rgb[startChannel];
+        let div = document.querySelector('.channel-' + startChannel);
+        if (!div) {
+            let container = document.querySelector('.lights');
 
-        Array.prototype.slice
-            .call(document.querySelectorAll('.channel-' + startChannel))
-            .forEach(div => {
-                div.style.backgroundColor = 'rgba('
-                    + rgb_data[String(startChannel)] + ', ' +
-                    +rgb_data[String(startChannel + 1)] + ', ' +
-                    +rgb_data[String(startChannel + 2)] + ', ' + ' 1)';
-            });
+            div = document.createElement('div');
+            div.classList.add('channel-' + startChannel, 'channel');
+            div.style.position = 'relative';
+            div.style.height = '100%';
+            div.style.flex = '1';
+
+            container.appendChild(div);
+        }
+
+
+        div.style.backgroundColor = 'rgba('
+            + rgb_data[String(startChannel)] + ', ' +
+            + rgb_data[String(startChannel + 1)] + ', ' +
+            + rgb_data[String(startChannel + 2)] + ', ' + ' 1)';
     }
 }

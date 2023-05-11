@@ -3,14 +3,17 @@
     http://<host:port>/debug 
 -->
 <html>
-    <body>
-        <div class="channel-1" style="position:absolute;left:0;top:0;width:50%;height:100%;"></div>
-        <div class="channel-4" style="position:absolute;left:50%;top:0;width:50%;height:100%;"></div>
 
-        <script src="/debug/dist/debug_bundle.js"></script>
-        <script src="/src/animate.js"></script>
-        <script>
-            console.warn("PLEASE START THE HTTP SERVER FROM ROOT (i.e. 'dmx-lt') AND OPEN THE URL ON BROWSER AS http://<host:port>/debug ");
-        </script>
-    </body>
+<body>
+    <div class="lights" style="position:absolute;left:0;top:0;width:100%;height:100%;display: flex;">
+
+    </div>
+
+    <script src="/debug/dist/debug_bundle.js"></script>
+    <script src="/src/animate.js"></script>
+    <script>
+        console.warn("PLEASE START THE HTTP SERVER FROM ROOT (i.e. 'dmx-lt') AND OPEN THE URL ON BROWSER AS http://<host:port>/debug ");
+    </script>
+</body>
+
 </html>

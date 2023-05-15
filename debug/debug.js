@@ -72,6 +72,7 @@ window.onload = () => {
             div.style.position = 'relative';
             div.style.height = '100%';
             div.style.flex = '1';
+            div.innerHTML = '<b>Channel: ' + startChannel + '</b>';
 
             container.appendChild(div);
         }

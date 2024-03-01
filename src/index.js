@@ -8,7 +8,9 @@ export const get_ws_message = _get_ws_message;
 
 function _start() {
     // console.info("IF YOU DIDN'T PATCH the enttec-open-usb MODULE, PLEASE SET this.startSending(4); OR SIMILAR");
-    const config_path = (process.argv[2] || "--config=" + path.resolve("./config/config.json/")).split("=")[1];
+    const args = process.argv;
+    const config = args.find(a => a.indexOf('--config=') !== -1);
+    const config_path = (config || "--config=" + path.resolve("./config/config.json/")).split("=")[1];
     console.info("CONFIG PATH", config_path);
 
     get_config(config_path).then((config) => {

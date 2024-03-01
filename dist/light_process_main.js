@@ -15,7 +15,7 @@
   \********************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("const { spawn } = __webpack_require__(/*! node:child_process */ \"node:child_process\");\r\n\r\nlet main = null;\r\n_start_process();\r\n\r\nfunction _start_process() {\r\n    main = spawn('node', [__dirname +'/main.js']);\r\n    main.stdout.on('data', (data) => {\r\n        console.log(`${data}`);\r\n    });\r\n    main.on('close', (code) => {\r\n        console.log(`child process exited with code ${code}`);\r\n        setTimeout(_start_process, 500);\r\n    });\r\n}\n\n//# sourceURL=webpack://dmxlt/./src/process_manager.js?");
+eval("const { spawn } = __webpack_require__(/*! node:child_process */ \"node:child_process\");\r\n\r\nlet main = null;\r\n_start_process();\r\n\r\nfunction _start_process() {\r\n    main = spawn('node', [__dirname + '/main.js', process.argv[2], process.argv[3], process.argv[4]]);  //just [2] used, but add 2 more\r\n    main.stdout.on('data', (data) => {\r\n        console.log(`${data}`);\r\n    });\r\n    main.on('close', (code) => {\r\n        console.log(`child process exited with code ${code}`);\r\n        setTimeout(_start_process, 500);\r\n    });\r\n}\n\n//# sourceURL=webpack://dmxlt/./src/process_manager.js?");
 
 /***/ }),
 

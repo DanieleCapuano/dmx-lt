@@ -46,8 +46,8 @@ window.onload = () => {
     function animate_debug(channel, dest_values, time, easing) {
         rgb[channel] = rgb[channel] || {
             [channel]: 0,
-            [channel + 1]: 0,
-            [channel + 2]: 0
+            [parseInt(channel) + 1]: 0,
+            [parseInt(channel) + 2]: 0
         };
 
         return window.animate(channel, rgb[channel], dest_values, time, easing, (update_val) => {

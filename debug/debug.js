@@ -24,8 +24,8 @@ window.onload = () => {
                 startChannel = msg.startChannel || 1,
                 rgb_val = {
                     [String(startChannel)]: c.r,
-                    [String(startChannel + 1)]: c.g,
-                    [String(startChannel + 2)]: c.b
+                    [String(parseInt(startChannel) + 1)]: c.g,
+                    [String(parseInt(startChannel) + 2)]: c.b
                 };
             if (animPromises[startChannel]) {
                 window.stopAnimation(startChannel);
@@ -79,7 +79,7 @@ window.onload = () => {
 
         div.style.backgroundColor = 'rgba('
             + rgb_data[String(startChannel)] + ', ' +
-            + rgb_data[String(startChannel + 1)] + ', ' +
-            + rgb_data[String(startChannel + 2)] + ', ' + ' 1)';
+            + rgb_data[String(parseInt(startChannel) + 1)] + ', ' +
+            + rgb_data[String(parseInt(startChannel) + 2)] + ', ' + ' 1)';
     }
 }

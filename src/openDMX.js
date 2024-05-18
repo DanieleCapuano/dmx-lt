@@ -113,13 +113,13 @@ function _init_rgb_obj(startChannel, r, g, b) {
 
     for (let i = 0; i < (fixed_values || []).length; i++) {
         let fv = fixed_values[i];
-        o[startChannel + fv.offset] = fv.value;
+        o[parseInt(startChannel) + fv.offset] = fv.value;
     }
 
     let ro = red_offset || 0,
         j = 0;
     for (let i = ro; i < ro + 3; i++) {
-        o[startChannel + i] = cols[j] || 0;
+        o[parseInt(startChannel) + i] = cols[j] || 0;
         j++;
     }
 
